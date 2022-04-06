@@ -17,6 +17,9 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
+      SLACK_SIGNING_SECRET: process.env['SLACK_SIGNING_SECRET'] as string,
+      SLACK_BOT_TOKEN: process.env['SLACK_BOT_TOKEN'] as string,
+      CHANNEL_TO_NOTIFY: process.env['CHANNEL_TO_NOTIFY'] as string,
     },
   },
   functions: { hello },

@@ -1,6 +1,5 @@
 import { App, AwsLambdaReceiver } from '@slack/bolt';
 import { AwsCallback, AwsEvent } from '@slack/bolt/dist/receivers/AwsLambdaReceiver';
-import { isGenericMessageEvent } from '@libs/helper';
 
 const awsLambdaReceiver = new AwsLambdaReceiver({
   signingSecret: process.env['SLACK_SIGNING_SECRET'] as string,
@@ -12,36 +11,21 @@ const app = new App({
   processBeforeResponse: true,
 });
 
-app.message('hello', async ({ message, say }) => {
-  if (!isGenericMessageEvent(message)) {
+app.event('emoji_changed', async ({ event, client, logger }) => {
+  if (event.subtype !== 'add') {
     return;
   }
 
-  await say({
-    blocks: [
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: `Hey there <@${message.user}>!`,
-        },
-        accessory: {
-          type: 'button',
-          text: {
-            type: 'plain_text',
-            text: 'Click Me',
-          },
-          action_id: 'button_click',
-        },
-      },
-    ],
-    text: `Hey there <@${message.user}>!`,
-  });
-});
+  const { name } = event;
 
-app.action('button_click', async ({ body, ack, say }) => {
-  await ack();
-  await say(`<@${body.user.id}> clicked the button`);
+  try {
+    await client.chat.postMessage({
+      channel: process.env['CHANNEL_TO_NOTIFY'] as string,
+      text: `🎉 A new emoji has been added! :${name}: \`:${name}:\``,
+    });
+  } catch (error) {
+    logger.error(error);
+  }
 });
 
 module.exports.main = async (event: AwsEvent, context: any, callback: AwsCallback) => {
