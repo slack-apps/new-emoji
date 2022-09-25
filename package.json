@@ -40,7 +40,7 @@
     "typescript": "4.6.3"
   },
   "engines": {
-    "node": "14.19.1"
+    "node": "16.17.1"
   },
   "suggest": {
     "@commitlint/{cli,config-conventional}": "Checks if your commit messages meet the conventional commit format",
@@ -50,6 +50,6 @@
     "pino": "Very low overhead Node.js logger"
   },
   "volta": {
-    "node": "14.19.1"
+    "node": "16.17.1"
   }
 }
